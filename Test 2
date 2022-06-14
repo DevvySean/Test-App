@@ -1,0 +1,16 @@
+import pyodbc
+
+conn = pyodbc.connect('Driver={SQL Server};'
+                      'Server=vcsst001;'
+                      'Database=VCD_REPOSITORY73;'
+                      'Trusted_Connection=yes;')
+
+producers = "UPDATE tfndnis_test SET promote_to_production = 'user_test5', promote_type = '1', direct_routing = 'normal_ACS' \
+            WHERE appname = 'AISS' and description NOT LIKE '%911 Callback%' and producer_number in ?"
+producer_number_input = "('XXXX1', 'XXXX2')"
+cursor = conn.cursor()
+cursor.execute(producers, producer_number_input)
+conn.commit()
+print("\nRecords updated")
+
+
