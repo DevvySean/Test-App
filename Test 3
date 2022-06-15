@@ -1,0 +1,19 @@
+import pyodbc
+import pandas as pd
+
+df = pd.read_excel("C:/Users/user/Documents/Producers.xlsx")
+
+conn = pyodbc.connect('Driver={SQL Server};'
+                      'Server=vcsst001;'
+                      'Database=VCD_REPOSITORY73;'
+                      'Trusted_Connection=yes;')
+
+cursor = conn.cursor()
+for i, row in df.iterrows():
+    cursor.execute("UPDATE tfndnis_test SET promote_to_production = 'ACS_Pilot', promote_type = '1', direct_routing = 'normal_acs' \
+            WHERE appname = 'AISS' and description NOT LIKE '%911 Callback%' and producer_number in (?)", row.Producers)
+
+conn.commit()
+print("\nRecords updated")
+
+
