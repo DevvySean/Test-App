@@ -1,0 +1,16 @@
+import pyodbc
+import pandas as pd
+import sqlalchemy
+
+
+conn = pyodbc.connect('Driver={SQL Server};'
+                      'Server=myserver;'
+                      'Database=mydb;'
+                      'Trusted_Connection=yes;')
+
+
+chunksize = 500000
+for chunk in pd.read_sql_query("select * from table_1", conn, chunksize=chunksize):
+    chunk.to_sql(name='table_2', con=conn, if_exists='append')
+    print("Backing Up Records, Please Wait..")
+print("Records Successfully Exported")
