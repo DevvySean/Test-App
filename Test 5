@@ -1,0 +1,26 @@
+import pandas as pd
+import sqlalchemy
+import win32com.client as win32
+
+engine = sqlalchemy.create_engine("mssql+pyodbc://my_DB/My_Table?driver=SQL Server", fast_executemany=True)
+
+
+
+chunksize = 125000
+
+df = pd.read_sql_query("select * from table1", engine, chunksize=chunksize)
+for chunk in df:
+    chunk.to_sql("table2", engine, if_exists='append', index=False, chunksize=chunksize)
+    print("Backing up table records, please Wait..")
+
+
+
+outlook = win32.Dispatch('outlook.application')
+mail = outlook.CreateItem(0)
+mail.To = 'user"@email.com'
+mail.Subject = 'TEST'
+mail.Body = """"""
+mail.HTMLBody = "<p1>A backup has been taken<br><br></p1>" + "<p2><br>This is an automated alert sent via Python.</p2>"
+mail.Send()
+print("Records Successfully Exported, Email Sent!")
+
